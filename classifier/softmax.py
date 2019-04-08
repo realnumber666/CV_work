@@ -19,23 +19,25 @@ def softmax_loss_naive(W, X, y, reg):
     loss = 0.0
     dW = np.zeros_like(W)
 
-    num_classes = W.shape[1] 
     num_train = X.shape[0]
+    num_class = W.shape[1]
 
     for i in range(num_train):
-        scores = X[i].dot(W)
-        shift_scores = scores - max(scores)
-        loss_i = - shift_scores[y[i]] + np.log(sum(np.exp(shift_scores)))
-        loss += loss_i
-        for j in range(num_classes):
-            softmax_output = np.exp(shift_scores[j]) / sum(np.exp(shift_scores))
+        score = X[i].np.dot(W)
+        score -= np.max(score) 
+        correct_score = score[y[i]]
+        exp_sum = np.sum(np.exp(score))
+        loss += np.log(exp_sum) - correct_score
+        for j in range(num_class):
             if j == y[i]:
-                dW[:,j] += (-1 + softmax_output) * X[i]
+                dW[:,j] += np.exp(score[j]) / exp_sum*X[i] - X[i]
             else:
-                dW[:,j] += softmax_output * X[i]
+                dW[:,j] += np.exp(score[j]) / exp_sum * X[i]
+
     loss /= num_train
     loss += 0.5 * reg * np.sum(W * W)
-    dW = dW / num_train + reg * W
+    dW /= num_train
+    dW += reg * W
     return loss, dW
 
 def softmax_loss_vectorized(W, X, y, reg):
@@ -48,17 +50,19 @@ def softmax_loss_vectorized(W, X, y, reg):
     loss = 0.0
     dW = np.zeros_like(W)
 
-    num_classes = W.shape[1] 
-    num_train = X.shape[0]
-    scores = X.dot(W)
-    shift_scores = scores - np.max(scores, axis = 1).reshape(-1, 1)
-    softmax_output = np.exp(shift_scores) / np.sum(np.exp(shift_scores), axis = 1).reshape(-1, 1)
-    loss = -np.sum(np.log(softmax_output[range(num_train), list(y)]))
+    num_train=X.shape[0] 
+    score = X.dot(W)
+    score -= np.max(score, axis = 1)[:, np.newaxis]    #axis = 1每一行的最大值，score仍为500*10
+    correct_score = score[range(num_train), y]    #correct_score变为500*1
+    exp_score = np.exp(score)
+    sum_exp_score = np.sum(exp_score, axis = 1)    #sum_exp_score为500*1
+    loss = np.sum(np.log(sum_exp_score)) - np.sum(correct_score)
+    exp_score /= sum_exp_score[:,np.newaxis]  #exp_score为500*10
+    for i in range(num_train):
+        dW += exp_score[i] * X[i][:,np.newaxis]   # X[i][:,np.newaxis]将X[i]增加一列纬度
+        dW[:, y[i]] -= X[i]
     loss /= num_train
-    loss += 0.5 * reg * np.sum(W * W)
-
-    dS = softmax_output.copy()
-    dS[range(num_train), list(y)] += -1
-    dW = (X.T).dot(dS)
-    dW = dW / num_train + reg * W
+    loss += 0.5*reg*np.sum(W*W)
+    dW /= num_train
+    dW += reg * W
     return loss, dW
