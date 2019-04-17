@@ -45,15 +45,14 @@ def load_CIFAR10(ROOT):
   ys = []
   for b in range(1,6):
     X, Y = load_CIFAR_batch(cifar10_dir + "data_batch_" + str(b))
-    X = getHog(X)
-    print(len(X))
     xs.append(X)
-    ys.append(Y)    
+    ys.append(Y)
+    print('----suc to load data_batch_' + str(b) + '----')
   Xtr = np.concatenate(xs)
   Ytr = np.concatenate(ys)
   del X, Y
   Xte, Yte = load_CIFAR_batch(cifar10_dir + 'test_batch')
-  Xte = getHog(Xte)
+  Xte = np.concatenate(Xte)
   return Xtr, Ytr, Xte, Yte
 
 class KNearestNeighbor(object):
@@ -171,13 +170,13 @@ X_train, y_train, X_test, y_test = load_CIFAR10(cifar10_dir)
 
 
 # train numbers
-num_train = 2 # 5000
+num_train = 5000
 mask = range(num_train)
 X_train = X_train[mask]
 y_train = y_train[mask]
 
 # test numbers
-num_test = 2 # 500
+num_test = 500
 mask = range(num_test)
 X_test = X_test[mask]
 y_test = y_test[mask]
