@@ -1,0 +1,6 @@
+train  = /root/xiaoyu/pytorch-yolo2-master/cfg/train.txt
+valid  = /root/xiaoyu/pytorch-yolo2-master/cfg/test.txt
+names = data/voc.names
+backup = backup
+gpus = 0
+
