@@ -1,0 +1,8 @@
+classes= 5
+train  = /root/xiaoyu/darknet/VOC-Own/train_docker.txt
+valid  = /root/xiaoyu/darknet/VOC-Own/test_docker.txt
+names = data/voc.names
+backup = backup
+
+
+

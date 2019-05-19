@@ -1,0 +1,7 @@
+classes= 5
+train  = /Users/zhangyangzeyu/Documents/mach-learning/class-3/darknet/VOC-Own/train.txt
+valid  = /Users/zhangyangzeyu/Documents/mach-learning/class-3/darknet/VOC-Own/test.txt
+names = data/voc.names
+backup = backup
+
+
